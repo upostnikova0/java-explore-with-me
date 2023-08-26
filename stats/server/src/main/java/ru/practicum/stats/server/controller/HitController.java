@@ -10,7 +10,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping
 public class HitController {
     private final HitService hitService;
 

@@ -8,7 +8,7 @@ import ru.practicum.stats.server.model.Hit;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Component("hitMapper")
+@Component
 public class HitMapper {
     public Hit toHit(EndpointHit endpointHit) {
         return Hit.builder()

@@ -1,11 +1,14 @@
 package ru.practicum.stats.server.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stats.dto.EndpointHit;
 import ru.practicum.stats.dto.ViewStats;
 import ru.practicum.stats.server.service.HitService;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -18,11 +21,11 @@ public class HitController {
     }
 
     @GetMapping("/stats")
-    public List<ViewStats> getStats(@RequestParam String start,
-                                    @RequestParam String end,
-                                    @RequestParam(required = false) List<String> uris,
+    public List<ViewStats> getStats(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+                                    @RequestParam(required = false) String[] uris,
                                     @RequestParam(defaultValue = "false") Boolean unique) {
-        log.info("get statistic for uris {}", uris);
+        log.info("GET statistic for uris {}", Arrays.toString(uris));
         return hitService.getStats(start, end, uris, unique);
     }
 

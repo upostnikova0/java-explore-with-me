@@ -15,24 +15,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/users/{userId}/requests")
 public class RequestController {
-    private final RequestService service;
+    private final RequestService requestService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto createRequest(@PathVariable Long userId, @RequestParam Long eventId) {
         log.info("POST request by userId {} for eventId {}", userId, eventId);
-        return service.createRequest(userId, eventId);
+        return requestService.createRequest(userId, eventId);
     }
 
     @PatchMapping("/{requestId}/cancel")
     public ParticipationRequestDto cancelRequestByRequester(@PathVariable Long userId, @PathVariable Long requestId) {
         log.info("PATCH cancel request by requesterId {} for requestId {}", userId, requestId);
-        return service.cancelRequestByRequester(userId, requestId);
+        return requestService.cancelRequestByRequester(userId, requestId);
     }
 
     @GetMapping
     public List<ParticipationRequestDto> getAllRequestsByRequester(@PathVariable Long userId) {
         log.info("GET all requests by requesterId {}", userId);
-        return service.getAllRequestsByRequester(userId);
+        return requestService.getAllRequestsByRequester(userId);
     }
 }

@@ -15,19 +15,19 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/compilations")
 public class PublicCompilationController {
-    private final CompilationService service;
+    private final CompilationService compilationService;
 
     @GetMapping
     public List<CompilationDto> searchCompilations(@RequestParam(required = false) Boolean pinned,
                                                    @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                    @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("GET api with params: pinned = {}, from = {}, size = {}", pinned, from, size);
-        return service.search(pinned, from, size);
+        return compilationService.search(pinned, from, size);
     }
 
     @GetMapping("/{compilationId}")
     public CompilationDto getById(@PathVariable @Positive Long compilationId) {
         log.info("GET api with param: compilationId = {}", compilationId);
-        return service.getById(compilationId);
+        return compilationService.getById(compilationId);
     }
 }

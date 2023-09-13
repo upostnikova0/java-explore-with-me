@@ -1,5 +1,6 @@
 package ru.practicum.stats.server.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,15 +16,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class HitServiceImpl implements HitService {
     private final HitRepository hitRepository;
     private final HitMapper hitMapper;
-
-    public HitServiceImpl(HitRepository hitRepository, HitMapper hitMapper) {
-        this.hitRepository = hitRepository;
-        this.hitMapper = hitMapper;
-    }
 
     @Transactional
     @Override

@@ -7,7 +7,6 @@ import ru.practicum.main.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 
-@ToString
 @Getter
 @Setter
 @Builder

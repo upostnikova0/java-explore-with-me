@@ -1,5 +1,6 @@
 package ru.practicum.main.user.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,14 +13,11 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin/users")
 public class UserController {
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(value = "ids", required = false) List<Long> ids,

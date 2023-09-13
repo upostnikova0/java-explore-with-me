@@ -8,7 +8,6 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-@ToString
 @Getter
 @Setter
 @Builder

@@ -17,26 +17,26 @@ import javax.validation.constraints.Positive;
 @RequiredArgsConstructor
 @RequestMapping("/admin/compilations")
 public class AdminCompilationController {
-    private final CompilationService service;
+    private final CompilationService compilationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto createCompilation(@RequestBody @Valid NewCompilationDto newCompilation) {
         log.info("POST api from admin: {}", newCompilation);
-        return service.addCompilation(newCompilation);
+        return compilationService.addCompilation(newCompilation);
     }
 
     @DeleteMapping("/{compilationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable @Positive Long compilationId) {
         log.info("DELETE api from admin {}", compilationId);
-        service.deleteCompilation(compilationId);
+        compilationService.deleteCompilation(compilationId);
     }
 
     @PatchMapping("/{compilationId}")
     public CompilationDto updateCompilation(@RequestBody @Valid UpdateCompilationRequest updatedCompilation,
                                             @PathVariable @Positive Long compilationId) {
         log.info("PATCH api from admin {}, {}", updatedCompilation, compilationId);
-        return service.updateCompilation(compilationId, updatedCompilation);
+        return compilationService.updateCompilation(compilationId, updatedCompilation);
     }
 }

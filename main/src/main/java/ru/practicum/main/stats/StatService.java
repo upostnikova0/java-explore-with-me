@@ -17,12 +17,12 @@ public class StatService {
     private static final String APP_NAME = "ewm-main-service";
     private static final String URI_BASE = "/events/";
     private static final LocalDateTime START_TIME = LocalDateTime.of(2000, 1, 1, 0, 0);
-    private final StatsClient client;
+    private final StatsClient statsClient;
 
     public Long getViews(Long eventId) {
         String[] uris = new String[1];
         uris[0] = URI_BASE + eventId;
-        List<ViewStats> statViews = client.getStats(START_TIME, LocalDateTime.now(), uris, true);
+        List<ViewStats> statViews = statsClient.getStats(START_TIME, LocalDateTime.now(), uris, true);
         if (statViews.isEmpty())
             return 0L;
         return statViews.get(0).getHits();
@@ -33,7 +33,7 @@ public class StatService {
         for (int i = 0; i < ids.size(); i++) {
             uris[i] = URI_BASE + ids.get(i).toString();
         }
-        List<ViewStats> statViews = client.getStats(START_TIME, LocalDateTime.now(), uris, true);
+        List<ViewStats> statViews = statsClient.getStats(START_TIME, LocalDateTime.now(), uris, true);
         return statViews.stream().collect(Collectors.toMap(x -> Long.parseLong(x.getUri().replace(URI_BASE, "")), ViewStats::getHits));
     }
 
@@ -45,6 +45,6 @@ public class StatService {
             uri = "/events";
         }
         EndpointHit endpointHit = new EndpointHit(null, APP_NAME, uri, ip, LocalDateTime.now());
-        client.saveHit(endpointHit);
+        statsClient.saveHit(endpointHit);
     }
 }

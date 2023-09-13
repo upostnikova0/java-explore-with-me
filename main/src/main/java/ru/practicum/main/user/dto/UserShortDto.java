@@ -5,7 +5,6 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@ToString
 @Getter
 @Setter
 @Builder

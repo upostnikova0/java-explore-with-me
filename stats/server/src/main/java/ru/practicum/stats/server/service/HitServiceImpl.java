@@ -1,5 +1,6 @@
 package ru.practicum.stats.server.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -12,19 +13,14 @@ import ru.practicum.stats.server.model.Hit;
 import ru.practicum.stats.server.repository.HitRepository;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class HitServiceImpl implements HitService {
     private final HitRepository hitRepository;
     private final HitMapper hitMapper;
-
-    public HitServiceImpl(HitRepository hitRepository, HitMapper hitMapper) {
-        this.hitRepository = hitRepository;
-        this.hitMapper = hitMapper;
-    }
 
     @Transactional
     @Override
@@ -36,23 +32,19 @@ public class HitServiceImpl implements HitService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ViewStats> getStats(String startDate, String endDate, List<String> uris, Boolean unique) {
-        LocalDateTime start = LocalDateTime.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime end = LocalDateTime.parse(endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
+    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, String[] uris, Boolean unique) {
         if (start.isAfter(end)) {
             log.info("Incorrect request. Start date cant be after end date");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect request. Start date cant be after end date");
         }
 
         List<ViewStats> stats;
-        if (unique) {
+        if (Boolean.TRUE.equals(unique)) {
             if (uris != null) {
                 stats = hitRepository.findHitsWithUriAndUniqueIp(uris, start, end);
-                log.info("found statistic for uri by unique IP: {}", stats);
+                log.info("found statistic for uris by unique IP: {}", stats);
                 return stats;
             }
-
             stats = hitRepository.findHitsWithoutUriAndUniqueIp(start, end);
             log.info("found statistic by unique IP: {}", stats);
         } else {
@@ -62,7 +54,6 @@ public class HitServiceImpl implements HitService {
                 return stats;
             }
         }
-
         stats = hitRepository.findHitsWithoutUri(start, end);
         log.info("found statistic: {}", stats);
         return stats;

@@ -23,7 +23,7 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
             "WHERE h.uri IN (?1) AND h.timestamp BETWEEN ?2 AND ?3 " +
             "GROUP BY h.app, h.uri " +
             "ORDER BY COUNT(DISTINCT h.ip) DESC")
-    List<ViewStats> findHitsWithUriAndUniqueIp(List<String> uris, LocalDateTime start, LocalDateTime end);
+    List<ViewStats> findHitsWithUriAndUniqueIp(String[] uris, LocalDateTime start, LocalDateTime end);
 
     @Query("SELECT " + NEW_VIEW_STATS + "(h.app, h.uri, COUNT(h.uri)) " + "FROM Hit AS h " +
             "WHERE h.timestamp BETWEEN ?1 AND ?2 " +
@@ -35,5 +35,5 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
             "WHERE h.uri IN (?1) AND h.timestamp BETWEEN ?2 AND ?3 " +
             "GROUP BY h.app, h.uri " +
             "ORDER BY COUNT (h.uri) DESC")
-    List<ViewStats> findHitsWithUri(List<String> uris, LocalDateTime start, LocalDateTime end);
+    List<ViewStats> findHitsWithUri(String[] uris, LocalDateTime start, LocalDateTime end);
 }

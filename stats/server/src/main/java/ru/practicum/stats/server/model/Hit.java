@@ -1,13 +1,15 @@
 package ru.practicum.stats.server.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -18,9 +20,9 @@ public class Hit {
     private Long id;
     @Column(nullable = false, length = 50)
     private String app;
-    @Column(length = 256)
+    @Column(nullable = false, length = 256)
     private String uri;
-    @Column(length = 50)
+    @Column(nullable = false, length = 50)
     private String ip;
     @Column(nullable = false)
     private LocalDateTime timestamp;

@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.main.comment.dto.CommentDto;
+import ru.practicum.main.comment.service.CommentService;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.service.EventService;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequestMapping("/events")
 public class PublicEventController {
     private final EventService eventService;
+    private final CommentService commentService;
 
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(required = false) String text,
@@ -41,5 +44,11 @@ public class PublicEventController {
     public EventFullDto getEventById(@PathVariable Long eventId, HttpServletRequest request) {
         log.info("GET event by id: {} from ip: {}", eventId, request.getRemoteAddr());
         return eventService.getEventById(eventId, request.getRemoteAddr());
+    }
+
+    @GetMapping("/{eventId}/comments")
+    public List<CommentDto> getComments(@PathVariable Long eventId) {
+        log.info("GET COMMENTS api: eventId = {}", eventId);
+        return commentService.getComments(eventId);
     }
 }

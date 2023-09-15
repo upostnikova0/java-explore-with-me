@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.main.comment.dto.CommentDto;
+import ru.practicum.main.comment.mapper.CommentMapper;
+import ru.practicum.main.comment.repository.CommentRepository;
 import ru.practicum.main.event.category.model.Category;
 import ru.practicum.main.event.category.service.CategoryService;
 import ru.practicum.main.event.dto.*;
@@ -37,6 +40,8 @@ public class EventServiceImpl implements EventService {
     private final LocationRepository locationRepository;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
     private final EventMapper eventMapper;
     private final StatService statService;
     private final LocationMapper locationMapper;
@@ -77,6 +82,7 @@ public class EventServiceImpl implements EventService {
         event.setInitiator(user);
         event.setState(PublicStatus.PENDING);
         EventFullDto savedEvent = eventMapper.toFullDto(eventRepository.save(event));
+        savedEvent.setComments(new ArrayList<>());
         savedEvent.setConfirmedRequests(0);
         savedEvent.setViews(0L);
         log.info("new event {} was added to db", savedEvent);
@@ -94,6 +100,7 @@ public class EventServiceImpl implements EventService {
 
         log.info("event with id {} was found", eventId);
         EventFullDto foundEvent = eventMapper.toFullDto(event);
+        setComments(foundEvent);
         foundEvent.setViews(statService.getViews(eventId));
         return foundEvent;
     }
@@ -143,6 +150,7 @@ public class EventServiceImpl implements EventService {
         Optional.ofNullable(updateEvent.getTitle()).ifPresent(event::setTitle);
         log.info("event {} was updated in db", event);
         EventFullDto updatedEvent = eventMapper.toFullDto(eventRepository.save(event));
+        setComments(updatedEvent);
         updatedEvent.setViews(statService.getViews(updatedEvent.getId()));
         return updatedEvent;
     }
@@ -172,6 +180,7 @@ public class EventServiceImpl implements EventService {
         }
         log.info("found events: {}", foundEvents);
         List<EventFullDto> result = foundEvents.stream().map(eventMapper::toFullDto).collect(Collectors.toList());
+        setComments(result);
         return setViewsFull(result);
     }
 
@@ -221,6 +230,7 @@ public class EventServiceImpl implements EventService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "new event date should be after published date + 1 hour");
         }
         EventFullDto savedEvent = eventMapper.toFullDto(eventRepository.save(event));
+        setComments(savedEvent);
         savedEvent.setViews(statService.getViews(savedEvent.getId()));
         log.info("updated event {} was successfully saved", savedEvent);
         return savedEvent;
@@ -234,6 +244,7 @@ public class EventServiceImpl implements EventService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "event was not published");
         }
         EventFullDto eventFullDto = eventMapper.toFullDto(event);
+        setComments(eventFullDto);
         statService.saveViews(eventId, ip);
         eventFullDto.setViews(statService.getViews(eventId));
         log.info("found event: {}", eventFullDto);
@@ -332,5 +343,30 @@ public class EventServiceImpl implements EventService {
             event.setViews(viewsNum);
         }
         return events;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CommentDto> getComments(Long eventId) {
+        Event event = findById(eventId);
+        List<CommentDto> foundComments = commentRepository
+                .findAllByEventId(event.getId())
+                .stream()
+                .map(commentMapper::toDto)
+                .collect(Collectors.toList());
+        log.info("found comments: {}", foundComments);
+        return foundComments;
+    }
+
+    private void setComments(List<EventFullDto> events) {
+        for (EventFullDto event : events) {
+            List<CommentDto> comments = getComments(event.getId());
+            event.setComments(comments);
+        }
+    }
+
+    private void setComments(EventFullDto event) {
+        List<CommentDto> comments = getComments(event.getId());
+        event.setComments(comments);
     }
 }

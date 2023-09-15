@@ -345,6 +345,8 @@ public class EventServiceImpl implements EventService {
         return events;
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<CommentDto> getComments(Long eventId) {
         Event event = findById(eventId);
         List<CommentDto> foundComments = commentRepository

@@ -1,5 +1,6 @@
 package ru.practicum.main.event.service;
 
+import ru.practicum.main.comment.dto.CommentDto;
 import ru.practicum.main.event.dto.*;
 import ru.practicum.main.event.enums.PublicStatus;
 import ru.practicum.main.event.model.Event;
@@ -43,4 +44,5 @@ public interface EventService {
 
     void updateEvent(Event event);
 
+    List<CommentDto> getComments(Long eventId);
 }
